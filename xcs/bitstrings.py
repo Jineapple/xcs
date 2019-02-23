@@ -91,7 +91,7 @@ __all__ = [
 ]
 
 from abc import ABCMeta, abstractmethod
-import random
+import xcsrandom
 
 import xcs
 
@@ -473,7 +473,7 @@ class BitCondition:
             bits = BitString(bits)
 
         mask = BitString([
-            random.random() > wildcard_probability
+            xcsrandom.random() > wildcard_probability
             for _ in range(len(bits))
         ])
 

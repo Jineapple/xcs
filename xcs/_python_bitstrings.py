@@ -64,7 +64,7 @@ __all__ = [
     'BitString',
 ]
 
-import random
+import xcsrandom
 
 
 from .bitstrings import BitStringBase
@@ -173,7 +173,7 @@ class BitString(BitStringBase):
         bits = 0
         for _ in range(length):
             bits <<= 1
-            bits += (random.random() < bit_prob)
+            bits += (xcsrandom.random() < bit_prob)
 
         return cls(bits, length)
 
@@ -202,7 +202,7 @@ class BitString(BitStringBase):
         assert isinstance(points, int) and points >= 0
 
         # Select the crossover points.
-        points = random.sample(range(length + 1), points)
+        points = xcsrandom.sample(range(length + 1), points)
 
         # Prep the points for the loop.
         points.sort()
@@ -211,7 +211,7 @@ class BitString(BitStringBase):
         # Fill the bits in with alternating ranges of 0 and 1 according to
         # the selected crossover points.
         previous = 0
-        include_range = bool(random.randrange(2))
+        include_range = bool(xcsrandom.randrange(2))
         bits = 0
         for point in points:
             if point > previous:

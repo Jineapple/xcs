@@ -1,4 +1,4 @@
-import random
+import xcsrandom
 
 
 from .. import bitstrings
@@ -25,7 +25,7 @@ class XCSClassifierRule(ClassifierRule):
     Usage:
         rule = XCSClassifierRule(
             condition=BitCondition('01##1'),
-            action=random.choice(list(model.possible_actions)),
+            action=xcsrandom.choice(list(model.possible_actions)),
             algorithm=model.algorithm,  # An XCSAlgorithm instance
             time_stamp=model.time_stamp
         )
@@ -475,7 +475,7 @@ class XCSAlgorithm(LCSAlgorithm):
         )
         if not action_candidates:
             action_candidates = match_set.model.possible_actions
-        action = random.choice(list(action_candidates))
+        action = xcsrandom.choice(list(action_candidates))
 
         # Create the new rule.
         return XCSClassifierRule(
@@ -593,7 +593,7 @@ class XCSAlgorithm(LCSAlgorithm):
         # With the probability specified in the parameters, apply the
         # crossover operator to the parents. Otherwise, just take the
         # parents unchanged.
-        if random.random() < self.crossover_probability:
+        if xcsrandom.random() < self.crossover_probability:
             condition1, condition2 = parent1.condition.crossover_with(
                 parent2.condition
             )
@@ -731,7 +731,7 @@ class XCSAlgorithm(LCSAlgorithm):
             total_votes += vote
 
         # Choose a rule to delete based on the probabilities just computed.
-        selector = random.uniform(0, total_votes)
+        selector = xcsrandom.uniform(0, total_votes)
         for rule, vote in deletion_votes.items():
             selector -= vote
             if selector <= 0:
@@ -790,7 +790,7 @@ class XCSAlgorithm(LCSAlgorithm):
             if (selected_rule is None or
                     bit_count > selected_bit_count or
                     (bit_count == selected_bit_count and
-                     random.randrange(2))):
+                     xcsrandom.randrange(2))):
                 selected_rule = rule
                 selected_bit_count = bit_count
 
@@ -837,14 +837,14 @@ class XCSAlgorithm(LCSAlgorithm):
         proportionate to its fitness, to act as a parent for a new rule in
         the classifier set. Return the selected rule."""
         total_fitness = sum(rule.fitness for rule in action_set)
-        selector = random.uniform(0, total_fitness)
+        selector = xcsrandom.uniform(0, total_fitness)
         for rule in action_set:
             selector -= rule.fitness
             if selector <= 0:
                 return rule
         # If for some reason a case slips through the above loop, perhaps
         # due to floating point error, we fall back on uniform selection.
-        return random.choice(list(action_set))
+        return xcsrandom.choice(list(action_set))
 
     def _mutate(self, condition, situation):
         """Create a new condition from the given one by probabilistically

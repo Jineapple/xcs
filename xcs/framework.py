@@ -1,4 +1,4 @@
-import random
+import xcsrandom
 from abc import ABCMeta, abstractmethod
 
 
@@ -69,15 +69,15 @@ class EpsilonGreedySelectionStrategy(ActionSelectionStrategy):
 
         # With probability epsilon, select an action uniformly from all the
         # actions in the match set.
-        if random.random() < self.epsilon:
-            return random.choice(list(match_set))
+        if xcsrandom.random() < self.epsilon:
+            return xcsrandom.choice(list(match_set))
 
         # Otherwise, return (one of) the best action(s)
         best_actions = match_set.best_actions
         if len(best_actions) == 1:
             return best_actions[0]
         else:
-            return random.choice(best_actions)
+            return xcsrandom.choice(best_actions)
 
 
 class ClassifierRule(metaclass=ABCMeta):

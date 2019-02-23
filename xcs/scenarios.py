@@ -91,7 +91,7 @@ __all__ = [
 ]
 
 import logging
-import random
+import xcsrandom
 from abc import ABCMeta, abstractmethod
 
 from . import numpy
@@ -274,7 +274,7 @@ class MUXProblem(Scenario):
             The current situation.
         """
         self.current_situation = bitstrings.BitString([
-            random.randrange(2)
+            xcsrandom.randrange(2)
             for _ in range(self.address_size + (1 << self.address_size))
         ])
         return self.current_situation
@@ -346,7 +346,7 @@ class HaystackProblem(Scenario):
         self.possible_actions = (True, False)
         self.initial_training_cycles = training_cycles
         self.remaining_cycles = training_cycles
-        self.needle_index = random.randrange(input_size)
+        self.needle_index = xcsrandom.randrange(input_size)
         self.needle_value = None
 
     @property
@@ -380,7 +380,7 @@ class HaystackProblem(Scenario):
         Return: None
         """
         self.remaining_cycles = self.initial_training_cycles
-        self.needle_index = random.randrange(self.input_size)
+        self.needle_index = xcsrandom.randrange(self.input_size)
 
     def sense(self):
         """Return a situation, encoded as a bit string, which represents
