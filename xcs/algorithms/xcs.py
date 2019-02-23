@@ -1,4 +1,5 @@
 import xcsrandom
+import collections
 
 
 from .. import bitstrings
@@ -712,7 +713,7 @@ class XCSAlgorithm(LCSAlgorithm):
         # Determine the probability of deletion, as a function of both
         # accuracy and niche sparsity.
         total_votes = 0
-        deletion_votes = {}
+        deletion_votes = collections.OrderedDict()
         for rule in model:
             vote = rule.action_set_size * rule.numerosity
 
