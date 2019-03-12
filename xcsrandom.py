@@ -713,27 +713,30 @@ class XcsRandom (Random):
         
     def getnumberofcalls(self):
         return self.counter
+
+    def getseed(self):
+        return self.seedValue
     
     def random(self):
         self.counter += 1
-        hi   = self.seed / self._Q;
-        lo   = self.seed % self._Q;
+        hi   = self.seedValue / self._Q;
+        lo   = self.seedValue % self._Q;
         test = self._A*lo - self._R*hi;
     
         if (test>0):
-            self.seed = test;
+            self.seedValue = test;
         else:
-            self.seed = test+self._M;
+            self.seedValue = test+self._M;
     
-        r = (self.seed)/self._M
+        r = (self.seedValue)/self._M
         #print (str(r)+'\n')
         return r;
     
     def seed(self, a=None):
         if a == None:
-            self.seed = int(time.time()) 
+            self.seedValue = int(time.time()) 
         else:
-            self.seed = a
+            self.seedValue = a
         
     def setstate(self, state):
         super().setstate(state)
@@ -793,6 +796,7 @@ startSeed = 1550403678
 _inst = XcsRandom(startSeed)
 getcalls = _inst.getnumberofcalls
 seed = _inst.seed
+getseed = _inst.getseed
 random = _inst.random
 uniform = _inst.uniform
 triangular = _inst.triangular

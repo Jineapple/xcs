@@ -338,27 +338,26 @@ class XCSAlgorithm(LCSAlgorithm):
     # For a detailed explanation of each parameter, please see the original
     # paper, "An Algorithmic Description of XCS", by Martin Butz and
     # Stewart Wilson, and/or the documentation above.
-    max_population_size = 200          # N
-    learning_rate = .15                # beta
-    accuracy_coefficient = .1          # alpha
-    error_threshold = .01              # epsilon_0
+    max_population_size = 800          # N
+    learning_rate = .2                 # beta
+    accuracy_coefficient = 0.1         # alpha
+    error_threshold = 10               # epsilon_0
     accuracy_power = 5                 # nu
-    discount_factor = .71              # gamma
-    ga_threshold = 35                  # theta_GA
-    crossover_probability = .75        # chi
-    mutation_probability = .03         # mu
+    discount_factor = .95              # gamma
+    ga_threshold = 25                  # theta_GA
+    crossover_probability = .8         # chi
+    mutation_probability = .04         # mu
     deletion_threshold = 20            # theta_del
     fitness_threshold = .1             # delta
     subsumption_threshold = 20         # theta_sub
-    wildcard_probability = .33         # P_#
-    initial_prediction = .00001        # p_I
-    initial_error = .00001             # epsilon_I
-    initial_fitness = .00001           # F_I
+    wildcard_probability = .5          # P_#
+    initial_prediction = 10.0          # p_I
+    initial_error = 0.0                # epsilon_I
+    initial_fitness = .01              # F_I
     exploration_probability = .5       # p_exp
     minimum_actions = None             # theta_mna
-    do_ga_subsumption = False          # doGASubsumption
-    do_action_set_subsumption = False  # doActionSetSubsumption
-
+    do_ga_subsumption = True           # doGASubsumption
+    do_action_set_subsumption = True   # doActionSetSubsumption
     # If this is None, epsilon-greedy selection with epsilon ==
     # exploration_probability is used. Otherwise, exploration_probability
     # is ignored. For canonical XCS, this is not an available parameter and

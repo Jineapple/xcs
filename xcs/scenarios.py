@@ -225,7 +225,7 @@ class MUXProblem(Scenario):
 
         self.address_size = address_size
         self.current_situation = None
-        self.possible_actions = (True, False)
+        self.possible_actions = (1, 0)
         self.initial_training_cycles = training_cycles
         self.remaining_cycles = training_cycles
 
@@ -301,7 +301,7 @@ class MUXProblem(Scenario):
             self.current_situation[:self.address_size]
         ))
         bit = self.current_situation[self.address_size + index]
-        return action == bit
+        return 1000*(action != bit)
 
     def more(self):
         """Return a Boolean indicating whether additional actions may be
