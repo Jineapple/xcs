@@ -272,11 +272,15 @@ class MUXProblem(Scenario):
         Arguments: None
         Return:
             The current situation.
-        """
+            
+                    
         self.current_situation = bitstrings.BitString([
-            xcsrandom.randrange(2)
-            for _ in range(self.address_size + (1 << self.address_size))
+                    xcsrandom.randrange(2)
+                    for _ in range(self.address_size + (1 << self.address_size))
         ])
+        """        
+        self.current_situation = bitstrings.BitString.random(self.address_size + (1 << self.address_size))
+        print(self.current_situation)
         return self.current_situation
 
     def execute(self, action):

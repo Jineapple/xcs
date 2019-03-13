@@ -4,6 +4,7 @@ import collections
 
 from .. import bitstrings
 from ..framework import ClassifierRule, LCSAlgorithm, EpsilonGreedySelectionStrategy, MatchSet, ClassifierSet
+from xcs.framework import AlternatingSelectionStrategy
 
 
 class XCSClassifierRule(ClassifierRule):
@@ -362,7 +363,7 @@ class XCSAlgorithm(LCSAlgorithm):
     # exploration_probability is used. Otherwise, exploration_probability
     # is ignored. For canonical XCS, this is not an available parameter and
     # should be set to None.
-    exploration_strategy = None
+    exploration_strategy = AlternatingSelectionStrategy()
 
     # This is the ratio that determines how much of the discounted future
     # reward comes from the best prediction versus the actual prediction
@@ -790,7 +791,7 @@ class XCSAlgorithm(LCSAlgorithm):
             if (selected_rule is None or
                     bit_count > selected_bit_count or
                     (bit_count == selected_bit_count and
-                     xcsrandom.randrange(2))):
+                     xcsrandom.randrange(2))): #Be Careful here, randrange can lead to "nondeterminism"
                 selected_rule = rule
                 selected_bit_count = bit_count
 

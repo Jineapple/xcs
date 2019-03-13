@@ -79,6 +79,48 @@ class EpsilonGreedySelectionStrategy(ActionSelectionStrategy):
         else:
             return xcsrandom.choice(best_actions)
 
+class AlternatingSelectionStrategy(ActionSelectionStrategy):
+    """The alternating selection strategy. During all odd steps, an action is chosen uniformly from all possible actions
+    regardless of predicted payoff. The rest of the time, the action with
+    the highest predicted payoff is chosen.
+
+    Usage:
+        # Define a new strategy
+        strategy = AlternatingSelectionStrategy()
+
+        # Create an algorithm instance, and tell it to use the new
+        # strategy we just created.
+        algorithm = XCSAlgorithm()
+        algorithm.exploration_strategy = strategy
+
+    Callable Instance:
+        Arguments:
+            match_set: A MatchSet instance.
+        Return:
+            An action from among those suggested by match_set.
+    """
+
+    def __init__(self):
+        self.explore = 1
+
+    def __call__(self, match_set):
+        """Defining this allows the object to be used like a function."""
+        assert isinstance(match_set, MatchSet)
+
+        # With probability epsilon, select an action uniformly from all the
+        # actions in the match set.
+        if self.explore:
+            self.explore = 0
+            return xcsrandom.choice(list(match_set))
+
+        self.explore = 1
+        # Otherwise, return (one of) the best action(s)
+        best_actions = match_set.best_actions
+        if len(best_actions) == 1:
+            return best_actions[0]
+        else:
+            return xcsrandom.choice(best_actions)
+
 
 class ClassifierRule(metaclass=ABCMeta):
     """Abstract base class defining the minimal interface for classifier
@@ -897,7 +939,7 @@ class ClassifierSet:
         # If an insufficient number of actions are recommended, create some
         # new rules (condition/action pairs) until there are enough actions
         # being recommended.
-        if self._algorithm.covering_is_required(match_set):
+        while self._algorithm.covering_is_required(match_set):
             # Ask the algorithm to provide a new classifier rule to add to
             # the population.
             rule = self._algorithm.cover(match_set)
