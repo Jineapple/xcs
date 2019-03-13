@@ -705,8 +705,8 @@ class XcsRandom (Random):
     _M = 2147483647
     _A = 16807
 
-    _Q = _M/_A
-    _R = _M%_A
+    _Q = _M // _A
+    _R = _M % _A
     
     def __init__(self, x=None):
         self.seed(x)
@@ -719,7 +719,7 @@ class XcsRandom (Random):
     
     def random(self):
         self.counter += 1
-        hi   = self.seedValue / self._Q;
+        hi   = self.seedValue // self._Q;
         lo   = self.seedValue % self._Q;
         test = self._A*lo - self._R*hi;
     
