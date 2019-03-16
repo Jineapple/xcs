@@ -305,7 +305,7 @@ class MUXProblem(Scenario):
             self.current_situation[:self.address_size]
         ))
         bit = self.current_situation[self.address_size + index]
-        return 1000*(action != bit)
+        return 1000*(action == bit)
 
     def more(self):
         """Return a Boolean indicating whether additional actions may be

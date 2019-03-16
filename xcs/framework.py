@@ -116,10 +116,8 @@ class AlternatingSelectionStrategy(ActionSelectionStrategy):
         self.explore = 1
         # Otherwise, return (one of) the best action(s)
         best_actions = match_set.best_actions
-        if len(best_actions) == 1:
-            return best_actions[0]
-        else:
-            return xcsrandom.choice(best_actions)
+        return best_actions[0]
+
 
 
 class ClassifierRule(metaclass=ABCMeta):
