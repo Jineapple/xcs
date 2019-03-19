@@ -173,7 +173,7 @@ class BitString(BitStringBase):
         bits = 0
         for _ in range(length):
             bits <<= 1
-            bits += (xcsrandom.random() >= bit_prob)
+            bits += (xcsrandom.random() < bit_prob)
 
         return cls(bits, length)
 
