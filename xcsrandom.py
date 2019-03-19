@@ -737,6 +737,17 @@ class XcsRandom (Random):
             self.seedValue = int(time.time()) 
         else:
             self.seedValue = a
+    
+    def randrange(self, limit):
+        return int(random()*limit)
+            
+    def choice(self, seq):        
+        try:
+            i = self.randrange(len(seq))
+        except ValueError:
+            raise IndexError('Cannot choose from an empty sequence') from None
+        return seq[i]
+    
         
     def setstate(self, state):
         super().setstate(state)

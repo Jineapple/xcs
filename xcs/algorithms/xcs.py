@@ -476,7 +476,7 @@ class XCSAlgorithm(LCSAlgorithm):
         )
         if not action_candidates:
             action_candidates = match_set.model.possible_actions
-        action = xcsrandom.choice(list(action_candidates))
+        action = xcsrandom.choice(sorted(action_candidates))
 
         # Create the new rule.
         return XCSClassifierRule(

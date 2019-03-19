@@ -225,7 +225,7 @@ class MUXProblem(Scenario):
 
         self.address_size = address_size
         self.current_situation = None
-        self.possible_actions = (1, 0)
+        self.possible_actions = (0, 1)
         self.initial_training_cycles = training_cycles
         self.remaining_cycles = training_cycles
 
@@ -280,7 +280,6 @@ class MUXProblem(Scenario):
         ])
         """        
         self.current_situation = bitstrings.BitString.random(self.address_size + (1 << self.address_size))
-        print(self.current_situation)
         return self.current_situation
 
     def execute(self, action):

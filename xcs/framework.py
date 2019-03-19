@@ -111,11 +111,11 @@ class AlternatingSelectionStrategy(ActionSelectionStrategy):
         # actions in the match set.
         if self.explore:
             self.explore = 0
-            return xcsrandom.choice(list(match_set))
+            return xcsrandom.choice(sorted(match_set))
 
         self.explore = 1
         # Otherwise, return (one of) the best action(s)
-        best_actions = match_set.best_actions
+        best_actions = sorted(match_set.best_actions)
         return best_actions[0]
 
 
