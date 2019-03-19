@@ -42,7 +42,7 @@ class XCSClassifierRule(ClassifierRule):
             rule belongs, as of the moment this rule is created.
     """
 
-    def __init__(self, condition, action, algorithm, time_stamp):
+    def __init__(self, condition, action, algorithm, time_stamp, init_set_size=1):
         assert isinstance(algorithm, XCSAlgorithm)
         assert isinstance(time_stamp, int)
 
@@ -67,7 +67,7 @@ class XCSClassifierRule(ClassifierRule):
         self.experience = 0
 
         # The average number of rules sharing the same niche as this rule
-        self.action_set_size = 1
+        self.action_set_size = init_set_size
 
         # The number of instances of this rule in the classifier set, which
         # is used to eliminate redundancy
@@ -143,6 +143,11 @@ class XCSClassifierRule(ClassifierRule):
         """The weight of this rule's prediction as compared to others in
         the same action set. For XCS, this is the fitness of the rule."""
         return self.fitness
+    
+    @property
+    def a_set_size(self):
+        """The average size of action sets this classifier has belong to."""
+        return self.action_set_size
 
 
 class XCSAlgorithm(LCSAlgorithm):
@@ -603,18 +608,28 @@ class XCSAlgorithm(LCSAlgorithm):
 
         # Apply the mutation operator to each child, randomly flipping
         # their mask bits with a small probability.
+        action1 = parent1.action;
+        action2 = parent2.action;
         condition1 = self._mutate(condition1, action_set.situation)
+        if(xcsrandom.random() < self.mutation_probability):
+            action1 = xcsrandom.choice(sorted(
+                match_set.model.possible_actions - frozenset({action1})))
         condition2 = self._mutate(condition2, action_set.situation)
+        if(xcsrandom.random() < self.mutation_probability):
+            action2 = xcsrandom.choice(sorted(
+                match_set.model.possible_actions - frozenset({action2})))
+        
 
         # If the newly generated children are already present in the
         # population (or if they should be subsumed due to GA subsumption)
         # then simply increment the numerosities of the existing rules in
         # the population.
         new_children = []
-        for condition in condition1, condition2:
+        for rule in (condition1, action1, parent1.a_set_size), (condition2, action2, parent2.a_set_size):
             # If the parameters specify that GA subsumption should be
             # performed, look for an accurate parent that can subsume the
             # new child.
+            (condition, action, action_set_size) = rule
             if self.do_ga_subsumption:
                 subsumed = False
                 for parent in parent1, parent2:
@@ -645,9 +660,10 @@ class XCSAlgorithm(LCSAlgorithm):
             # set in just a moment.
             child = XCSClassifierRule(
                 condition,
-                action_set.action,
+                action,
                 self,
-                action_set.model.time_stamp
+                action_set.model.time_stamp,
+                action_set_size
             )
             if child in action_set.model:
                 action_set.model.add(child)
