@@ -839,12 +839,15 @@ class XCSAlgorithm(LCSAlgorithm):
         the classifier set. Return the selected rule."""
         total_fitness = sum(rule.fitness for rule in action_set)
         selector = xcsrandom.uniform(0, total_fitness)
+    
         for rule in action_set:
-            selector -= rule.fitness
-            if selector <= 0:
+            selector -= rule.fitness    
+            if selector < 0:
                 return rule
+
         # If for some reason a case slips through the above loop, perhaps
         # due to floating point error, we fall back on uniform selection.
+        assert(False)
         return xcsrandom.choice(list(action_set))
 
     def _mutate(self, condition, situation):
