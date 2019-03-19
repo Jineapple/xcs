@@ -516,6 +516,10 @@ class ActionSet:
             rule.action == self._action and
             rule.condition in self._rules
         )
+    
+    def __len__(self):
+        """Defining this determines the behavior of len(instance)."""
+        return len(self._rules)
 
     def __iter__(self):
         """Defining this determines the behavior of iter(instance)."""
@@ -774,7 +778,7 @@ class MatchSet:
             expectation = self._algorithm.get_future_expectation(self)
             predecessor.payoff += expectation
 
-    def apply_payoff(self):
+    def apply_payoff(self, explore=True):
         """Apply the payoff that has been accumulated from immediate
         reward and/or payments from successor match sets. Attempting to
         call this method before an action has been selected or after it
@@ -796,6 +800,8 @@ class MatchSet:
                              "been applied.")
         self._algorithm.distribute_payoff(self)
         self._payoff = 0
+        if explore:
+            self.model.update_time_stamp()
         self._algorithm.update(self)
         self._closed = True
 
@@ -1128,6 +1134,7 @@ class ClassifierSet:
         assert isinstance(scenario, scenarios.Scenario)
 
         previous_match_set = None
+        explore = True
 
         # Repeat until the scenario has run its course.
         while scenario.more():
@@ -1163,7 +1170,7 @@ class ClassifierSet:
                 if scenario.is_dynamic:
                     if previous_match_set is not None:
                         match_set.pay(previous_match_set)
-                        previous_match_set.apply_payoff()
+                        previous_match_set.apply_payoff(explore)
                     match_set.payoff = reward
 
                     # Remember the current reward and match set for the
@@ -1171,10 +1178,12 @@ class ClassifierSet:
                     previous_match_set = match_set
                 else:
                     match_set.payoff = reward
-                    match_set.apply_payoff()
+                    match_set.apply_payoff(explore)
+            #Alternate exploration and exploitation steps
+            explore = not explore
 
         # This serves to tie off the final stitch. The last action taken
         # gets only the immediate reward; there is no future reward
         # expected.
         if learn and previous_match_set is not None:
-            previous_match_set.apply_payoff()
+            previous_match_set.apply_payoff(not explore)

@@ -568,16 +568,15 @@ class XCSAlgorithm(LCSAlgorithm):
         assert match_set.selected_action is not None
 
         # Increment the iteration counter.
-        match_set.model.update_time_stamp()
+        #match_set.model.update_time_stamp()
 
         action_set = match_set[match_set.selected_action]
 
         # If the average number of iterations since the last update for
         # each rule in the action set is too small, return early instead of
         # applying the GA.
-        # Workaround: time stamp is halved, odd numbers are rounded up
         average_time_passed = (
-            round(match_set.model.time_stamp/ 2) -
+            match_set.model.time_stamp -
             self._get_average_time_stamp(action_set)
         )
         if average_time_passed <= self.ga_threshold:
@@ -820,8 +819,7 @@ class XCSAlgorithm(LCSAlgorithm):
         set."""
         # This is the average value of the iteration counter upon the most
         # recent update of each rule in this action set.
-        # workaround: timestamp per rule is divided by 2 so that only exploration steps count
-        total_time_stamps = sum(round(rule.time_stamp / 2) * rule.numerosity
+        total_time_stamps = sum(rule.time_stamp * rule.numerosity
                                 for rule in action_set)
         total_numerosity = sum(rule.numerosity for rule in action_set)
         return total_time_stamps / (total_numerosity or 1)
