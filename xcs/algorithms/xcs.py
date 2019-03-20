@@ -88,7 +88,8 @@ class XCSClassifierRule(ClassifierRule):
                     'fitness',
                     'experience',
                     'action_set_size',
-                    'numerosity'
+                    'numerosity',
+                    'id'
                 )
             )
         )

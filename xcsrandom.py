@@ -749,11 +749,11 @@ class XcsRandom (Random):
         return seq[i]
     
     def sample(self, population, k):
+        # This version of sample can draw the same element repeatedly
         if isinstance(population, _Set):
             population = tuple(population)
         if not isinstance(population, _Sequence):
             raise TypeError("Population must be a sequence or set.  For dicts, use list(d).")
-        randbelow = self.randrange
         n = len(population)
         if not 0 <= k <= n:
             raise ValueError("Sample larger than population or is negative")
@@ -761,9 +761,8 @@ class XcsRandom (Random):
             # An n-length list is smaller than a k-length set
         pool = list(population)
         for i in range(k):         # invariant:  non-selected at [0,n-i)
-            j = randbelow(n-i)
+            j = randrange(n)
             result[i] = pool[j]
-            pool[j] = pool[n-i-1]   # move non-selected item into vacancy
         return result
     
         

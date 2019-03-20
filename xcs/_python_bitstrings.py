@@ -202,7 +202,7 @@ class BitString(BitStringBase):
         assert isinstance(points, int) and points >= 0
 
         # Select the crossover points.
-        points = xcsrandom.sample(range(length + 1), points)
+        points = xcsrandom.sample(range(length), points)
 
         # Prep the points for the loop.
         if(len(points) == 2):
