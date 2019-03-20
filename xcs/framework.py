@@ -800,9 +800,9 @@ class MatchSet:
                              "been applied.")
         self._algorithm.distribute_payoff(self)
         self._payoff = 0
-        if explore:
-            self.model.update_time_stamp()
         self._algorithm.update(self)
+        if not explore:
+            self.model.update_time_stamp()
         self._closed = True
 
     @property
