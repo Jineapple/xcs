@@ -748,6 +748,24 @@ class XcsRandom (Random):
             raise IndexError('Cannot choose from an empty sequence') from None
         return seq[i]
     
+    def sample(self, population, k):
+        if isinstance(population, _Set):
+            population = tuple(population)
+        if not isinstance(population, _Sequence):
+            raise TypeError("Population must be a sequence or set.  For dicts, use list(d).")
+        randbelow = self.randrange
+        n = len(population)
+        if not 0 <= k <= n:
+            raise ValueError("Sample larger than population or is negative")
+        result = [None] * k
+            # An n-length list is smaller than a k-length set
+        pool = list(population)
+        for i in range(k):         # invariant:  non-selected at [0,n-i)
+            j = randbelow(n-i)
+            result[i] = pool[j]
+            pool[j] = pool[n-i-1]   # move non-selected item into vacancy
+        return result
+    
         
     def setstate(self, state):
         super().setstate(state)

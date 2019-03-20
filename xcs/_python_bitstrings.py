@@ -211,7 +211,8 @@ class BitString(BitStringBase):
         # Fill the bits in with alternating ranges of 0 and 1 according to
         # the selected crossover points.
         previous = 0
-        include_range = bool(xcsrandom.randrange(2)) # TODO be careful here, randrange can lead to "nondeterminism"
+        #include_range = bool(xcsrandom.randrange(2)) # TODO be careful here, randrange can lead to "nondeterminism"
+        include_range = True
         bits = 0
         for point in points:
             if point > previous:
