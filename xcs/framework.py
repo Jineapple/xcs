@@ -848,6 +848,7 @@ class ClassifierSet:
         # situation exactly once, rather than repeatedly (once for each
         # unique occurrence in a classifier rule).
         self._population = {}
+        self._nextid = 1
 
         self._algorithm = algorithm
         self._possible_actions = frozenset(possible_actions)
@@ -1014,6 +1015,8 @@ class ClassifierSet:
 
         condition = rule.condition
         action = rule.action
+        rule.id = self._nextid
+        self._nextid += 1
 
         # If the rule already exists in the population, then we virtually
         # add the rule by incrementing the existing rule's numerosity. This

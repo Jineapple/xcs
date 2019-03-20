@@ -46,6 +46,7 @@ class XCSClassifierRule(ClassifierRule):
         assert isinstance(algorithm, XCSAlgorithm)
         assert isinstance(time_stamp, int)
 
+        self.id = 0 #Gets changed when added to population
         self._algorithm = algorithm
         self._condition = condition
         self._action = action
@@ -586,7 +587,12 @@ class XCSAlgorithm(LCSAlgorithm):
         )
         if average_time_passed <= self.ga_threshold:
             return
-
+        
+        sorted_action_set = sorted([rule for rule in action_set],key=lambda x: x.id)
+        rules_dict = {}
+        for rule in sorted_action_set:
+            rules_dict[rule.condition] = rule
+        action_set._rules = rules_dict        
         # Update the time step for each rule to indicate that they were
         # updated by the GA.
         self._set_timestamps(action_set)

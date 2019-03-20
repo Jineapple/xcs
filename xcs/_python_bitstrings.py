@@ -205,6 +205,8 @@ class BitString(BitStringBase):
         points = xcsrandom.sample(range(length + 1), points)
 
         # Prep the points for the loop.
+        if(len(points) == 2):
+            points[1] += 1
         points.sort()
         points.append(length)
 
