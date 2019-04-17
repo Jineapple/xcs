@@ -1,5 +1,4 @@
 import xcsrandom
-import collections
 
 
 from .. import bitstrings
@@ -606,10 +605,12 @@ class XCSAlgorithm(LCSAlgorithm):
         # With the probability specified in the parameters, apply the
         # crossover operator to the parents. Otherwise, just take the
         # parents unchanged.
+        crossover = False
         if xcsrandom.random() < self.crossover_probability:
             condition1, condition2 = parent1.condition.crossover_with(
                 parent2.condition
             )
+            crossover = True
         else:
             condition1, condition2 = parent1.condition, parent2.condition
 
@@ -632,11 +633,11 @@ class XCSAlgorithm(LCSAlgorithm):
         # then simply increment the numerosities of the existing rules in
         # the population.
         new_children = []
-        for rule in (condition1, action1, parent1.a_set_size), (condition2, action2, parent2.a_set_size):
+        for rule in (condition1, action1, parent1), (condition2, action2, parent2):
             # If the parameters specify that GA subsumption should be
             # performed, look for an accurate parent that can subsume the
             # new child.
-            (condition, action, action_set_size) = rule
+            (condition, action, par) = rule
             if self.do_ga_subsumption:
                 subsumed = False
                 for parent in parent1, parent2:
@@ -644,7 +645,8 @@ class XCSAlgorithm(LCSAlgorithm):
                         (parent.experience >
                          self.subsumption_threshold) and
                         parent.error < self.error_threshold and
-                        parent.condition(condition)
+                        parent.condition(condition) and 
+                        parent.action is action
                     )
                     if should_subsume:
                         if parent in action_set.model:
@@ -670,34 +672,37 @@ class XCSAlgorithm(LCSAlgorithm):
                 action,
                 self,
                 action_set.model.time_stamp,
-                action_set_size
-            )
-            if child in action_set.model:
-                action_set.model.add(child)
-            else:
-                new_children.append(child)
-
-        # If there were any children which weren't subsumed and weren't
-        # already present in the classifier set, add them.
-        if new_children:
-            average_reward = .5 * (
-                parent1.average_reward +
-                parent2.average_reward
-            )
-
-            error = .5 * (parent1.error + parent2.error)
-
-            # .1 * (average fitness of parents)
-            fitness = .05 * (
-                parent1.fitness +
-                parent2.fitness
-            )
-
-            for child in new_children:
+                par.action_set_size
+            )            
+            if crossover:                
+                average_reward = .5 * (
+                    parent1.average_reward +
+                    parent2.average_reward
+                )
+    
+                error = .5 * (parent1.error + parent2.error)
+    
+                # .1 * (average fitness of parents)
+                fitness = .05 * (
+                    parent1.fitness +
+                    parent2.fitness)
+                    
                 child.average_reward = average_reward
                 child.error = error
                 child.fitness = fitness
-                action_set.model.add(child)
+            else:
+                child.average_reward = par.average_reward
+                child.error = par.error
+                child.fitness = par.fitness * 0.1
+            #if child in action_set.model:
+            action_set.model.add(child)
+            #else:
+            #    new_children.append(child)
+
+        # If there were any children which weren't subsumed and weren't
+        # already present in the classifier set, add them.              
+        #for child in new_children:
+        #    action_set.model.add(child)
 
     def prune(self, model):
         """Reduce the classifier set's population size, if necessary, by
@@ -736,8 +741,9 @@ class XCSAlgorithm(LCSAlgorithm):
         # Determine the probability of deletion, as a function of both
         # accuracy and niche sparsity.
         total_votes = 0
-        deletion_votes = collections.OrderedDict()
-        for rule in model:
+        deletion_votes = {}
+        sorted_model = sorted([rule for rule in model],key=lambda x: x.id)
+        for rule in sorted_model:
             vote = rule.action_set_size * rule.numerosity
 
             sufficient_experience = (
@@ -812,9 +818,9 @@ class XCSAlgorithm(LCSAlgorithm):
                 continue
             bit_count = rule.condition.count()
             if (selected_rule is None or
-                    bit_count > selected_bit_count or
-                    (bit_count == selected_bit_count and
-                     xcsrandom.randrange(2))): #Be Careful here, randrange can lead to "nondeterminism"
+                    bit_count < selected_bit_count):# or
+                    #(bit_count == selected_bit_count and
+                     #xcsrandom.randrange(2))): #Be Careful here, randrange can lead to "nondeterminism"
                 selected_rule = rule
                 selected_bit_count = bit_count
 

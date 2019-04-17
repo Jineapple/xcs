@@ -517,9 +517,9 @@ class ActionSet:
             rule.condition in self._rules
         )
     
-    def __len__(self):
+    #def __len__(self):
         """Defining this determines the behavior of len(instance)."""
-        return len(self._rules)
+    #    return len(self._rules)
 
     def __iter__(self):
         """Defining this determines the behavior of iter(instance)."""
